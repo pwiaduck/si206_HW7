@@ -53,7 +53,37 @@ def make_positions_table(data, cur, conn):
 #     created for you -- see make_positions_table above for details.
 
 def make_players_table(data, cur, conn):
-    pass
+
+    cur.execute("CREATE TABLE IF NOT EXISTS Players (id INTEGER PRIMARY KEY, name TEXT, position_id INTEGER, birthyear INTEGER, nationality TEXT)")
+
+    for player in data["squad"]:
+        
+        name = player["name"]
+        id = int(player["id"])
+
+        if player["position"] == "Goalkeeper":
+            position_id = 0
+        elif player["position"] == "Defence":
+            position_id = 1
+        elif player["position"] == "Midfield":
+            position_id = 2
+        elif player["position"] == "Offence":
+            position_id = 3
+        elif player["position"] == "Forward":
+            position_id = 4
+        
+        birthyear = int(player["dateOfBirth"][0:4])
+        nationality = player["nationality"]
+
+        cur.execute("INSERT OR IGNORE INTO Players (id, name, position_id, birthyear, nationality) VALUES (?,?,?,?,?)",(id, name, position_id, birthyear, nationality))
+    
+    conn.commit()
+
+    # print("Players:")
+    # cur.execute('SELECT id, name, position_id, birthyear, nationality FROM Players')
+    # for row in cur:
+    #     print(row)
+   
 
 ## [TASK 2]: 10 points
 # Finish the function nationality_search
@@ -66,7 +96,18 @@ def make_players_table(data, cur, conn):
         # the player's name, their position_id, and their nationality.
 
 def nationality_search(countries, cur, conn):
-    pass
+
+    lst = []
+
+    for country in countries:
+        cur.execute("SELECT name, position_id, nationality FROM Players WHERE nationality = ?", (country, ))
+        for row in cur: 
+            lst.append(row)
+    conn.commit()
+
+    return lst
+
+
 
 ## [TASK 3]: 10 points
 # finish the function birthyear_nationality_search

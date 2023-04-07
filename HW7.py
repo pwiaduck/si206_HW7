@@ -79,10 +79,6 @@ def make_players_table(data, cur, conn):
     
     conn.commit()
 
-    # print("Players:")
-    # cur.execute('SELECT id, name, position_id, birthyear, nationality FROM Players')
-    # for row in cur:
-    #     print(row)
    
 
 ## [TASK 2]: 10 points
@@ -108,7 +104,6 @@ def nationality_search(countries, cur, conn):
     return lst
 
 
-
 ## [TASK 3]: 10 points
 # finish the function birthyear_nationality_search
 
@@ -126,7 +121,15 @@ def nationality_search(countries, cur, conn):
 
 
 def birthyear_nationality_search(age, country, cur, conn):
-    pass
+    
+    lst = []
+
+    cur.execute("SELECT name, nationality, birthyear FROM Players WHERE nationality = ? and birthyear < ?", (country, 2023-age))
+    for row in cur: 
+            lst.append(row)
+    conn.commit()
+
+    return lst
 
 ## [TASK 4]: 15 points
 # finish the function position_birth_search
